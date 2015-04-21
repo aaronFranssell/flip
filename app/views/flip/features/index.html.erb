@@ -3,13 +3,13 @@
 
   <table>
     <thead>
-      <th class="name">Feature Name</th>
+      <th class="name">Name</th>
       <th class="description">Description</th>
       <th class="status">Status</th>
       <% @p.strategies.each do |strategy| %>
         <th>
-          <%= strategy.name %>
-          <span class="description"><%= strategy.description %></span>
+          <%= strategy.name.titleize %>
+
         </th>
       <% end %>
       <th>
@@ -25,29 +25,23 @@
         <td class="description"><%= definition.description %></td>
 
         <%= content_tag :td, class: @p.status(definition) do %>
-          <%= @p.status definition %>
+          <span><%= @p.status definition %></span>
         <% end %>
 
         <% @p.strategies.each do |strategy| %>
           <%= content_tag :td, class: @p.strategy_status(strategy, definition) || "pass" do %>
-            <%= @p.strategy_status strategy, definition %>
+            <span><%= @p.strategy_status strategy, definition %></span>
 
             <% if strategy.switchable? %>
-              <%= form_tag(@p.switch_url(strategy, definition), method: :put) do %>
+              <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
                 <% unless @p.strategy_status(strategy, definition) == "on" %>
-                  <%= submit_tag "Switch On" %>
+                  <%= button_tag "Switch On", name: 'commit', value: 'Switch On' %>
                 <% end %>
                 <% unless @p.strategy_status(strategy, definition) == "off" %>
-                  <%= submit_tag "Switch Off" %>
-                <% end %>
-              <% end %>
-              <% unless @p.strategy_status(strategy, definition).blank? %>
-                <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
-                  <%= submit_tag "Delete" %>
+                  <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off' %>
                 <% end %>
               <% end %>
             <% end %>
-
           <% end %>
         <% end %>
 

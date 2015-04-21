@@ -32,6 +32,8 @@ module Flip
       def strategy_status(strategy, definition)
         if strategy.knows? definition
           strategy.on?(definition) ? "on" : "off"
+        else
+          'off'
         end
       end
 
