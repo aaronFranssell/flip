@@ -30,33 +30,32 @@
           <% end %>
 
           <% @p.strategies.each do |strategy| %>
-            <%= content_tag :td, class: @p.strategy_status(strategy, definition) || "pass" do %>
-              <% unless @p.strategy_status(strategy, definition).blank? %>
-                <span class='status'><%= (@p.strategy_status strategy, definition).to_s.titleize %></span>
-              <% end %>
+            <% strategy_status = @p.strategy_status(strategy, definition) %>
+            <%= content_tag :td, class: strategy_status || "pass" do %>
+              <span class='status'><%= strategy_status.to_s.titleize %></span>
 
               <% if strategy.switchable? %>
-                <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
-                  <div class='strategy-wrapper'>
-                    <% unless @p.strategy_status(strategy, definition) == "on" %>
+                <div class='strategy-wrapper'>
+                  <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
+                    <% unless strategy_status == "on" %>
                       <%= content_tag :div do %>
                         <%= button_tag "Switch On", name: 'commit', value: 'Switch On', class: 'button-on' %>
                       <% end %>
                     <% end %>
-                    <% unless @p.strategy_status(strategy, definition) == "off" %>
+                    <% unless ['off', nil].include? strategy_status %>
                       <%= content_tag :div do %>
                         <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off', class: 'button-off' %>
                       <% end %>
                     <% end %>
-                    <% unless @p.strategy_status(strategy, definition).blank? %>
-                      <%= content_tag :div do %>
-                        <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
-                          <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
-                        <% end %>
+                  <% end %>
+                  <% unless strategy_status.blank? %>
+                    <%= content_tag :div do %>
+                      <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
+                        <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
                       <% end %>
                     <% end %>
-                  </div>
-                <% end %>
+                  <% end %>
+                </div>
               <% end %>
             <% end %>
           <% end %>

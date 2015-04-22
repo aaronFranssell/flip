@@ -21,7 +21,7 @@ module Flip
     end
 
     def switch! key, on
-      session[session_name(key)] = on ? "true" : "false"
+      session[session_name(key)] = (on ? "true" : "false")
     end
 
     def delete! key
