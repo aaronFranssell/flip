@@ -1,56 +1,73 @@
 <div class="flip">
-  <h1>Feature Flippers</h1>
+  <div class="content">
+    <h1>Feature Flippers</h1>
 
-  <table>
-    <thead>
-      <th class="name">Name</th>
-      <th class="description">Description</th>
-      <th class="status">Status</th>
-      <% @p.strategies.each do |strategy| %>
-        <th>
-          <%= strategy.name.titleize %>
-
-        </th>
-      <% end %>
-      <th>
-        Default
-        <span class="description">The system default when no strategies match.</span>
-      </th>
-    </thead>
-    <tbody>
-    <% @p.definitions.each do |definition| %>
-      <tr>
-        <td class="name"><%= definition.name %></td>
-
-        <td class="description"><%= definition.description %></td>
-
-        <%= content_tag :td, class: @p.status(definition) do %>
-          <span><%= @p.status definition %></span>
-        <% end %>
-
+    <table>
+      <thead>
+        <th class="name">Name</th>
+        <th class="description">Description</th>
+        <th class="status">Status</th>
         <% @p.strategies.each do |strategy| %>
-          <%= content_tag :td, class: @p.strategy_status(strategy, definition) || "pass" do %>
-            <span><%= @p.strategy_status strategy, definition %></span>
+          <th>
+            <%= strategy.name.titleize %>
+            <span class="description"><%= strategy.description %></span>
+          </th>
+        <% end %>
+        <th>
+          Default
+          <span class="description">The system default when no strategies match.</span>
+        </th>
+      </thead>
+      <tbody>
+      <% @p.definitions.each do |definition| %>
+        <tr>
+          <td class="name"><%= definition.name %></td>
 
-            <% if strategy.switchable? %>
-              <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
-                <% unless @p.strategy_status(strategy, definition) == "on" %>
-                  <%= button_tag "Switch On", name: 'commit', value: 'Switch On' %>
-                <% end %>
-                <% unless @p.strategy_status(strategy, definition) == "off" %>
-                  <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off' %>
+          <td class="description"><%= definition.description %></td>
+
+          <%= content_tag :td, class: @p.status(definition) do %>
+            <span class='status'><%= (@p.status definition).titleize %></span>
+          <% end %>
+
+          <% @p.strategies.each do |strategy| %>
+            <%= content_tag :td, class: @p.strategy_status(strategy, definition) || "pass" do %>
+              <% unless @p.strategy_status(strategy, definition).blank? %>
+                <span class='status'><%= (@p.strategy_status strategy, definition).to_s.titleize %></span>
+              <% end %>
+
+              <% if strategy.switchable? %>
+                <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
+                  <div class='strategy-wrapper'>
+                    <% unless @p.strategy_status(strategy, definition) == "on" %>
+                      <%= content_tag :div do %>
+                        <%= button_tag "Switch On", name: 'commit', value: 'Switch On', class: 'button-on' %>
+                      <% end %>
+                    <% end %>
+                    <% unless @p.strategy_status(strategy, definition) == "off" %>
+                      <%= content_tag :div do %>
+                        <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off', class: 'button-off' %>
+                      <% end %>
+                    <% end %>
+                    <% unless @p.strategy_status(strategy, definition).blank? %>
+                      <%= content_tag :div do %>
+                        <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
+                          <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
                 <% end %>
               <% end %>
             <% end %>
           <% end %>
-        <% end %>
 
-        <%= content_tag :td, class: @p.default_status(definition) do %>
-          <%= @p.default_status definition %>
-        <% end %>
+          <%= content_tag :td, class: @p.default_status(definition) do %>
+            <span class='status'><%= (@p.default_status definition).titleize %></span>
+          <% end %>
 
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
