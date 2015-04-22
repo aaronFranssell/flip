@@ -42,15 +42,15 @@
                         <%= button_tag "Switch On", name: 'commit', value: 'Switch On', class: 'button-on' %>
                       <% end %>
                     <% end %>
-                    <% unless ['off', nil].include? strategy_status %>
+                    <% unless strategy_status == 'off' %>
                       <%= content_tag :div do %>
                         <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off', class: 'button-off' %>
                       <% end %>
                     <% end %>
                   <% end %>
                   <% unless strategy_status.blank? %>
-                    <%= content_tag :div do %>
-                      <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
+                    <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
+                      <%= content_tag :div do %>
                         <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
                       <% end %>
                     <% end %>
