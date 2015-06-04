@@ -1,11 +1,13 @@
 module Flip
   class StrategiesController < ApplicationController
+    skip_before_filter :establish_navbar
 
     include Flip::Engine.routes.url_helpers
 
     def update
       strategy.switch! feature_key, turn_on?
-      redirect_to features_url
+      # redirect_to features_url
+      render json: { state: turn_on? }, status: :ok
     end
 
     def destroy
