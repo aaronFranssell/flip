@@ -40,6 +40,9 @@ Install
     # Include the Feature model, e.g. config/initializers/feature.rb:
     require 'feature'
 
+    # Require flip Javascript file in app/assets/javascripts/application.js:
+    //= require flip
+
 Declaring Features
 ------------------
 
