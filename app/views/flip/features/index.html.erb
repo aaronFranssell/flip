@@ -1,7 +1,6 @@
 <div class="flip">
   <div class="content">
     <h1>Feature Flippers</h1>
-
     <table>
       <thead>
         <th class="name">Name</th>
@@ -29,30 +28,22 @@
             <span class='status'><%= (@p.status definition).titleize %></span>
           <% end %>
 
-          <% @p.strategies.each do |strategy| %>
+          <% @p.strategies.each_with_index do |strategy, index| %>
             <% strategy_status = @p.strategy_status(strategy, definition) %>
             <%= content_tag :td, class: strategy_status || "pass" do %>
-              <span class='status'><%= strategy_status.to_s.titleize %></span>
 
               <% if strategy.switchable? %>
                 <div class='strategy-wrapper'>
-                  <%= form_tag(@p.switch_url(strategy, definition), method: :patch) do %>
-                    <% unless strategy_status == "on" %>
-                      <%= content_tag :div do %>
-                        <%= button_tag "Switch On", name: 'commit', value: 'Switch On', class: 'button-on' %>
-                      <% end %>
-                    <% end %>
-                    <% unless strategy_status == 'off' %>
-                      <%= content_tag :div do %>
-                        <%= button_tag "Switch Off", name: 'commit', value: 'Switch Off', class: 'button-off' %>
-                      <% end %>
-                    <% end %>
-                  <% end %>
-                  <% unless strategy_status.blank? %>
-                    <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
-                      <%= content_tag :div do %>
-                        <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
-                      <% end %>
+                  <%= form_tag(@p.switch_url(strategy, definition), method: :delete) do %>
+                    <div class="onoffswitch">
+                      <%= check_box_tag 'commit', 'switchonoff', strategy_status == 'on', id: "myonoffswitch#{index}", class: "onoffswitch-checkbox"  %>
+                      <label class="onoffswitch-label" for="myonoffswitch<%= index %>">
+                        <span class="onoffswitch-inner"></span>
+                        <span class="onoffswitch-switch"></span>
+                      </label>
+                    </div>
+                    <% unless strategy_status.blank? %>
+                      <%= button_tag "Delete", name: 'commit', value: 'Delete', class: 'button-delete' %>
                     <% end %>
                   <% end %>
                 </div>
