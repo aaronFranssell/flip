@@ -10,6 +10,17 @@ class TrueStrategy < Flip::AbstractStrategy
 end
 
 describe Flip::FeatureSet do
+  let :feature_set_with_no_expiration_date do
+    Flip::FeatureSet.instance << Flip::Definition.new(:feature)
+  end
+
+  let :feature_set_with_invalid_expiration_date do
+    Flip::FeatureSet.instance << Flip::Definition.new(:feature, expiration_date: 'bleh')
+  end
+
+  let :feature_set_with_expired_expiration_date do
+    Flip::FeatureSet.instance << Flip::Definition.new(:feature, expiration_date: Date.new - 1)
+  end
 
   let :feature_set_with_null_strategy do
     Flip::FeatureSet.new.tap do |s|
@@ -64,4 +75,25 @@ describe Flip::FeatureSet do
     end
   end
 
+  describe ".stale_features" do
+    after(:all) do
+      Flip::FeatureSet.reset
+    end
+
+    it 'exits with no error if no expiration date is present' do
+      feature_set_with_no_expiration_date
+      Flip::FeatureSet.stale_features
+    end
+
+    it 'throws an exception if there is an invalid expiration date' do
+      feature_set_with_invalid_expiration_date
+      expect { Flip::FeatureSet.stale_features }.to raise_error('Expiration date is not an instance of a date!')
+    end
+
+    it 'thrown an exception if there is an expired feature' do
+      feature_set_with_expired_expiration_date
+      message = "Feature feature expired on #{(Date.new - 1).strftime('%m/%d/%Y')}."
+      expect { Flip::FeatureSet.stale_features }.to raise_error(message)
+    end
+  end
 end

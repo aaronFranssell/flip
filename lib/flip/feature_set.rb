@@ -9,6 +9,15 @@ module Flip
       @instance = nil
     end
 
+    def self.stale_features
+      expiring_definitions = instance.definitions.select { |definition| definition.options.key?(:expiration_date) }
+      expiring_definitions.each do |definition|
+        expiry_date = definition.options[:expiration_date]
+        fail 'Expiration date is not an instance of a date!' unless expiry_date.is_a?(Date)
+        fail "Feature #{definition.key} expired on #{expiry_date.strftime('%m/%d/%Y')}." if expiry_date < Date.today
+      end
+    end
+
     # Sets the default for definitions which fall through the strategies.
     # Accepts boolean or a Proc to be called.
     attr_writer :default

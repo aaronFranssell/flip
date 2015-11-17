@@ -161,6 +161,32 @@ end
 mount Flip::Engine => "/admin/features"
 ```
 
+Stale Features
+---------
+Since long lived feature toggles can significantly add to technical debt for an application, you can specify an expiration date for a feature.
+
+These features will still be functional in production, but you may run a rake task that will have a non-zero exit status if there are expired features in your app.
+
+```ruby
+class Feature < ActiveRecord::Base
+  include Flip::Declarable
+
+  strategy Flip::DatabaseStrategy
+  strategy Flip::DefaultStrategy
+  default false
+
+  # A basic feature declaration.
+  feature :shiny_things, expiration_date: Date.new(2012, 8, 1) # some long ago date
+
+end
+```
+
+In the terminal/commit step:
+
+```rake flip:stale_features```
+
+Hopefully this will provide a stick to force developers to clean up old features...
+
 ----
 Created by Paul Annesley
 Copyright © 2011-2013 Learnable Pty Ltd, [MIT Licence](http://www.opensource.org/licenses/mit-license.php).

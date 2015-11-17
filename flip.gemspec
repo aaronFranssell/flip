@@ -19,10 +19,10 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency("activesupport", ">= 3.0", "< 5")
+  s.add_dependency("rake", ">= 10", "< 11")
   s.add_dependency("i18n")
 
   s.add_development_dependency("rspec", "~> 2.5")
   s.add_development_dependency("rspec-its")
-  s.add_development_dependency("rake")
   s.add_development_dependency("pry")
 end
